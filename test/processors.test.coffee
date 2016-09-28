@@ -1,4 +1,4 @@
-processors = require('../lib/xml2js').processors
+processors = require('../').processors
 assert = require 'assert'
 equ = assert.equal
 
