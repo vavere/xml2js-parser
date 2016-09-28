@@ -1,5 +1,5 @@
-node-xml2js
-===========
+xml-2js
+=======
 
 Ever had the urge to parse XML? And wanted to access the data in some sane,
 easy way? Don't want to compile a C parser, for whatever reason? Then xml2js is
