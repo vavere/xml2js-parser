@@ -46,6 +46,21 @@ class ValidationError extends Error {};
 class Parser extends events.EventEmitter {
   
   static get defaults() { return DEFAULTS; }
+  static get processors() { return PROCESSORS; }
+  static get ValidationError() { return ValidationError; }
+  static get Parser() { return Parser; }
+
+  static parseString(str, a, b) {
+    let cb, options = {};
+    if (b != null) {
+      if (typeof b === 'function') cb = b;
+      if (typeof a === 'object') options = a;
+    } else {
+      if (typeof a === 'function') cb = a;
+    }
+    const parser = new Parser(options);
+    parser.parseString(str, cb);
+  }  
 
   constructor(options) {
     super();
@@ -289,26 +304,10 @@ function processName(processors, processedName) {
     processedName = processors[i](processedName);
   }
   return processedName;
-};
-
-function parseString(str, a, b) {
-  let cb, options = {};
-  if (b != null) {
-    if (typeof b === 'function') cb = b;
-    if (typeof a === 'object') options = a;
-  } else {
-    if (typeof a === 'function') cb = a;
-  }
-  const parser = new Parser(options);
-  parser.parseString(str, cb);
 }
 
 function stripBOM(str) {
   return str[0] === '\uFEFF' ? str.substring(1) : str;
 }
 
-module.exports.Parser = Parser;
-module.exports.processors = PROCESSORS;
-module.exports.ValidationError = ValidationError;
-module.exports.parseString = parseString;
-
+module.exports = Parser;
