@@ -69,7 +69,7 @@ fs.readFile(__dirname + '/foo.xml', (err, data) => {
 Parsing multiple files
 ----------------------
 
-If you want to parse multiple files, you can call `reset()` on your parser object.
+If you want to parse multiple files, you can call `reset()` after each object.
 
 Processing attribute, tag names and values
 ------------------------------------------
@@ -78,7 +78,6 @@ You can optionally provide the parser with attribute name and tag name processor
 as element value processors:
 
 ```javascript
-
 function nameToUpperCase(name){
   return name.toUpperCase();
 }
@@ -129,9 +128,7 @@ specified for the parser. Options are specified by ``new Parser({optionName:
 value})``. Possible options are:
 
   * `attrkey` (default: `$`): Prefix that is used to access the attributes.
-    Version 0.1 default was `@`.
-  * `charkey` (default: `_`): Prefix that is used to access the character
-    content. Version 0.1 default was `#`.
+  * `charkey` (default: `_`): Prefix that is used to access the character content. 
   * `explicitCharkey` (default: `false`)
   * `trim` (default: `false`): Trim the whitespace at the beginning and end of
     text nodes.
@@ -171,8 +168,6 @@ value})``. Possible options are:
      text nodes should be included. 
   * `async` (default `false`): Should the callbacks be async? This *might* be
     an incompatible change if your code depends on sync execution of callbacks.
-    Future versions of `xml-2js` might change this default, so the recommendation
-    is to not depend on sync execution anyway. 
   * `strict` (default `true`): Set sax-js to strict or non-strict parsing mode.
     Defaults to `true` which is *highly* recommended, since parsing HTML which
     is not well-formed XML might yield just about anything. 
@@ -184,6 +179,7 @@ value})``. Possible options are:
         //do something with `name`
         return name
     }
+    ```
   * `attrValueProcessors` (default: `null`): Allows the addition of attribute
     value processing functions. Accepts an `Array` of functions with following
     signature:
