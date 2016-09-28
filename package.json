@@ -1,7 +1,7 @@
 {
   "name": "xml-2js",
   "description": "Simple XML to JavaScript object converter.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Lauris Vavere <lauris@ma-1.lv>",
   "contributors": [
     "Marek Kubica <marek@xivilization.net> (https://xivilization.net)",
