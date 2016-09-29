@@ -95,9 +95,9 @@ class Parser extends events.EventEmitter {
   }
 
   reset() {
+    this.removeAllListeners();
     this.result = null;
     this.stack = [];
-    this.removeAllListeners();
     this.saxParser = sax.parser(this.strict, {
       trim: false,
       normalize: false,
