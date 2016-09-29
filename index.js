@@ -65,9 +65,7 @@ class Parser extends events.EventEmitter {
   constructor(options) {
     super();
     Object.assign(this, DEFAULTS, options);
-    if (this.xmlns) {
-      this.xmlnskey = this.attrkey + "ns";
-    }
+    if (this.xmlns) this.xmlnskey = this.attrkey + 'ns';
     if (this.normalizeTags) {
       this.tagNameProcessors = this.tagNameProcessors || [];
       this.tagNameProcessors.unshift(PROCESSORS.normalize);
