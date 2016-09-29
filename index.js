@@ -96,15 +96,6 @@ class Parser extends events.EventEmitter {
     }
   }
 
-  assignOrPush(obj, key, newValue) {
-    if (!(key in obj)) {
-      obj[key] = this.options.explicitArray ? [newValue] : newValue;
-    } else {
-      if (!(obj[key] instanceof Array)) obj[key] = [obj[key]];
-      obj[key].push(newValue);
-    }
-  }
-
   reset() {
     this.EXPLICIT_CHARKEY = this.options.explicitCharkey;
     this.resultObject = null;
@@ -156,6 +147,14 @@ class Parser extends events.EventEmitter {
     }
   }
   
+  _assignOrPush(obj, key, newValue) {
+    if (!(key in obj)) {
+      obj[key] = this.options.explicitArray ? [newValue] : newValue;
+    } else {
+      if (!(obj[key] instanceof Array)) obj[key] = [obj[key]];
+      obj[key].push(newValue);
+    }
+  }  
   _openTag(node) {
     const obj = {[this.options.charkey]: ''};
     if (!this.options.ignoreAttrs) {
@@ -166,7 +165,7 @@ class Parser extends events.EventEmitter {
         const newValue = this.options.attrValueProcessors ? processName(this.options.attrValueProcessors, node.attributes[key]) : node.attributes[key];
         const processedKey = this.options.attrNameProcessors ? processName(this.options.attrNameProcessors, key) : key;
         if (this.options.mergeAttrs) {
-          this.assignOrPush(obj, processedKey, newValue);
+          this._assignOrPush(obj, processedKey, newValue);
         } else {
           obj[this.options.attrkey][processedKey] = newValue;
         }
@@ -246,7 +245,7 @@ class Parser extends events.EventEmitter {
       }
     }
     if (this.stack.length > 0) {
-      this.assignOrPush(s, nodeName, obj);
+      this._assignOrPush(s, nodeName, obj);
     } else {
       if (this.options.explicitRoot) {
         const old = obj;
