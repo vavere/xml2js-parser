@@ -180,8 +180,8 @@ class Parser extends events.EventEmitter {
   }
 
   _closeTag() {
-    let cdata, emptyStr, obj;
-    obj = this.stack.pop();
+    let cdata, emptyStr;
+    let obj = this.stack.pop();
     const nodeName = obj['#name'];
     if (!this.explicitChildren || !this.preserveChildrenOrder) {
       delete obj['#name'];
