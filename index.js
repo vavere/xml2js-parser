@@ -181,15 +181,17 @@ class Parser extends events.EventEmitter {
 
   _closeTag() {
     let obj = this.stack.pop();
+
     const nodeName = obj['#name'];
     if (!this.explicitChildren || !this.preserveChildrenOrder) {
       delete obj['#name'];
     }
-    let cdata = false;
-    if (obj.cdata === true) {
-      cdata = obj.cdata;
+
+    const cdata = obj.cdata === true;
+    if (cdata) {
       delete obj.cdata;
     }
+    
     let emptyStr = '';
     const s = this.stack[this.stack.length - 1];
     if (obj[this.charkey].match(/^\s*$/) && !cdata) {
@@ -210,6 +212,7 @@ class Parser extends events.EventEmitter {
     if (!Object.keys(obj).length) {
       obj = this.emptyTag !== '' ? this.emptyTag : emptyStr;
     }
+
     if (this.validator != null) {
       const xpath = '/' + this.stack.map(n => n['#name']).concat(nodeName).join('/');
       try {
@@ -218,6 +221,7 @@ class Parser extends events.EventEmitter {
         this.emit('error', err);
       }
     }
+
     if (this.explicitChildren && !this.mergeAttrs && typeof obj === 'object') {
       if (!this.preserveChildrenOrder) {
         const node = {};
@@ -243,10 +247,13 @@ class Parser extends events.EventEmitter {
         }
       }
     }
+
     if (this.stack.length > 0) {
       this._assignOrPush(s, nodeName, obj);
     } else {
-      if (this.explicitRoot) obj = {[nodeName]: obj};
+      if (this.explicitRoot) {
+        obj = {[nodeName]: obj};
+      }
       this.resultObject = obj;
       this.saxParser.ended = true;
       this.emit('end', this.resultObject);
