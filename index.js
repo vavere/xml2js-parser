@@ -64,27 +64,27 @@ class Parser extends events.EventEmitter {
 
   constructor(options) {
     super();
-    this.options = Object.assign({}, DEFAULTS, options);
-    if (this.options.xmlns) {
-      this.options.xmlnskey = this.options.attrkey + "ns";
+    Object.assign(this, DEFAULTS, options);
+    if (this.xmlns) {
+      this.xmlnskey = this.attrkey + "ns";
     }
-    if (this.options.normalizeTags) {
-      this.options.tagNameProcessors = this.options.tagNameProcessors || [];
-      this.options.tagNameProcessors.unshift(PROCESSORS.normalize);
+    if (this.normalizeTags) {
+      this.tagNameProcessors = this.tagNameProcessors || [];
+      this.tagNameProcessors.unshift(PROCESSORS.normalize);
     }
     this.reset();
   }
   
   processAsync() {
     try {
-      if (this.remaining.length <= this.options.chunkSize) {
+      if (this.remaining.length <= this.chunkSize) {
         const chunk = this.remaining;
         this.remaining = '';
         this.saxParser = this.saxParser.write(chunk);
         this.saxParser.close();
       } else {
-        const chunk = this.remaining.substr(0, this.options.chunkSize);
-        this.remaining = this.remaining.substr(this.options.chunkSize, this.remaining.length);
+        const chunk = this.remaining.substr(0, this.chunkSize);
+        this.remaining = this.remaining.substr(this.chunkSize, this.remaining.length);
         this.saxParser = this.saxParser.write(chunk);
         setImmediate(() => this.processAsync());
       }
@@ -97,14 +97,14 @@ class Parser extends events.EventEmitter {
   }
 
   reset() {
-    this.EXPLICIT_CHARKEY = this.options.explicitCharkey;
+    this.EXPLICIT_CHARKEY = this.explicitCharkey;
     this.resultObject = null;
     this.stack = [];
     this.removeAllListeners();
-    this.saxParser = sax.parser(this.options.strict, {
+    this.saxParser = sax.parser(this.strict, {
       trim: false,
       normalize: false,
-      xmlns: this.options.xmlns
+      xmlns: this.xmlns
     });
     this.saxParser.errThrown = false;
     this.saxParser.ended = false;
@@ -131,7 +131,7 @@ class Parser extends events.EventEmitter {
       str = str.toString();
       if (str.trim() === '') return this.emit('end', null);
       str = stripBOM(str);
-      if (this.options.async) {
+      if (this.async) {
         this.remaining = str;
         setImmediate(() => this.processAsync());
         return this.saxParser;
@@ -149,31 +149,31 @@ class Parser extends events.EventEmitter {
   
   _assignOrPush(obj, key, newValue) {
     if (!(key in obj)) {
-      obj[key] = this.options.explicitArray ? [newValue] : newValue;
+      obj[key] = this.explicitArray ? [newValue] : newValue;
     } else {
       if (!(obj[key] instanceof Array)) obj[key] = [obj[key]];
       obj[key].push(newValue);
     }
   }  
   _openTag(node) {
-    const obj = {[this.options.charkey]: ''};
-    if (!this.options.ignoreAttrs) {
+    const obj = {[this.charkey]: ''};
+    if (!this.ignoreAttrs) {
       const ref = node.attributes;
       for (let key in ref) {
         if (!ref.hasOwnProperty(key)) continue;
-        if (!(this.options.attrkey in obj) && !this.options.mergeAttrs) obj[this.options.attrkey] = {};
-        const newValue = this.options.attrValueProcessors ? processName(this.options.attrValueProcessors, node.attributes[key]) : node.attributes[key];
-        const processedKey = this.options.attrNameProcessors ? processName(this.options.attrNameProcessors, key) : key;
-        if (this.options.mergeAttrs) {
+        if (!(this.attrkey in obj) && !this.mergeAttrs) obj[this.attrkey] = {};
+        const newValue = this.attrValueProcessors ? processName(this.attrValueProcessors, node.attributes[key]) : node.attributes[key];
+        const processedKey = this.attrNameProcessors ? processName(this.attrNameProcessors, key) : key;
+        if (this.mergeAttrs) {
           this._assignOrPush(obj, processedKey, newValue);
         } else {
-          obj[this.options.attrkey][processedKey] = newValue;
+          obj[this.attrkey][processedKey] = newValue;
         }
       }
     }
-    obj['#name'] = this.options.tagNameProcessors ? processName(this.options.tagNameProcessors, node.name) : node.name;
-    if (this.options.xmlns) {
-      obj[this.options.xmlnskey] = {
+    obj['#name'] = this.tagNameProcessors ? processName(this.tagNameProcessors, node.name) : node.name;
+    if (this.xmlns) {
+      obj[this.xmlnskey] = {
         uri: node.uri,
         local: node.local
       };
@@ -185,7 +185,7 @@ class Parser extends events.EventEmitter {
     let cdata, emptyStr, obj;
     obj = this.stack.pop();
     const nodeName = obj['#name'];
-    if (!this.options.explicitChildren || !this.options.preserveChildrenOrder) {
+    if (!this.explicitChildren || !this.preserveChildrenOrder) {
       delete obj['#name'];
     }
     if (obj.cdata === true) {
@@ -193,61 +193,61 @@ class Parser extends events.EventEmitter {
       delete obj.cdata;
     }
     const s = this.stack[this.stack.length - 1];
-    if (obj[this.options.charkey].match(/^\s*$/) && !cdata) {
-      emptyStr = obj[this.options.charkey];
-      delete obj[this.options.charkey];
+    if (obj[this.charkey].match(/^\s*$/) && !cdata) {
+      emptyStr = obj[this.charkey];
+      delete obj[this.charkey];
     } else {
-      if (this.options.trim) {
-        obj[this.options.charkey] = obj[this.options.charkey].trim();
+      if (this.trim) {
+        obj[this.charkey] = obj[this.charkey].trim();
       }
-      if (this.options.normalize) {
-        obj[this.options.charkey] = obj[this.options.charkey].replace(/\s{2,}/g, ' ').trim();
+      if (this.normalize) {
+        obj[this.charkey] = obj[this.charkey].replace(/\s{2,}/g, ' ').trim();
       }
-      obj[this.options.charkey] = this.options.valueProcessors ? processName(this.options.valueProcessors, obj[this.options.charkey]) : obj[this.options.charkey];
-      if (Object.keys(obj).length === 1 && this.options.charkey in obj && !this.EXPLICIT_CHARKEY) {
-        obj = obj[this.options.charkey];
+      obj[this.charkey] = this.valueProcessors ? processName(this.valueProcessors, obj[this.charkey]) : obj[this.charkey];
+      if (Object.keys(obj).length === 1 && this.charkey in obj && !this.EXPLICIT_CHARKEY) {
+        obj = obj[this.charkey];
       }
     }
     if (!Object.keys(obj).length) {
-      obj = this.options.emptyTag !== '' ? this.options.emptyTag : emptyStr;
+      obj = this.emptyTag !== '' ? this.emptyTag : emptyStr;
     }
-    if (this.options.validator != null) {
+    if (this.validator != null) {
       const xpath = '/' + this.stack.map(n => n['#name']).concat(nodeName).join('/');
       try {
-        obj = this.options.validator(xpath, s && s[nodeName], obj);
+        obj = this.validator(xpath, s && s[nodeName], obj);
       } catch (err) {
         this.emit('error', err);
       }
     }
-    if (this.options.explicitChildren && !this.options.mergeAttrs && typeof obj === 'object') {
-      if (!this.options.preserveChildrenOrder) {
+    if (this.explicitChildren && !this.mergeAttrs && typeof obj === 'object') {
+      if (!this.preserveChildrenOrder) {
         const node = {};
-        if (this.options.attrkey in obj) {
-          node[this.options.attrkey] = obj[this.options.attrkey];
-          delete obj[this.options.attrkey];
+        if (this.attrkey in obj) {
+          node[this.attrkey] = obj[this.attrkey];
+          delete obj[this.attrkey];
         }
-        if (!this.options.charsAsChildren && this.options.charkey in obj) {
-          node[this.options.charkey] = obj[this.options.charkey];
-          delete obj[this.options.charkey];
+        if (!this.charsAsChildren && this.charkey in obj) {
+          node[this.charkey] = obj[this.charkey];
+          delete obj[this.charkey];
         }
         if (Object.getOwnPropertyNames(obj).length) {
-          node[this.options.childkey] = obj;
+          node[this.childkey] = obj;
         }
         obj = node;
       } else if (s) {
-        s[this.options.childkey] = s[this.options.childkey] || [];
+        s[this.childkey] = s[this.childkey] || [];
         const objClone = Object.assign({}, obj);
-        s[this.options.childkey].push(objClone);
+        s[this.childkey].push(objClone);
         delete obj['#name'];
-        if (Object.keys(obj).length === 1 && this.options.charkey in obj && !this.EXPLICIT_CHARKEY) {
-          obj = obj[this.options.charkey];
+        if (Object.keys(obj).length === 1 && this.charkey in obj && !this.EXPLICIT_CHARKEY) {
+          obj = obj[this.charkey];
         }
       }
     }
     if (this.stack.length > 0) {
       this._assignOrPush(s, nodeName, obj);
     } else {
-      if (this.options.explicitRoot) {
+      if (this.explicitRoot) {
         const old = obj;
         obj = {};
         obj[nodeName] = old;
@@ -261,16 +261,16 @@ class Parser extends events.EventEmitter {
   _onText(text) {
     const s = this.stack[this.stack.length - 1];
     if (s) {
-      s[this.options.charkey] += text;
-      if (this.options.explicitChildren && this.options.preserveChildrenOrder && 
-          this.options.charsAsChildren && (this.options.includeWhiteChars || text.replace(/\\n/g, '').trim() !== '')) {
-        s[this.options.childkey] = s[this.options.childkey] || [];
+      s[this.charkey] += text;
+      if (this.explicitChildren && this.preserveChildrenOrder && 
+          this.charsAsChildren && (this.includeWhiteChars || text.replace(/\\n/g, '').trim() !== '')) {
+        s[this.childkey] = s[this.childkey] || [];
         const charChild = {'#name': '__text__'};
-        charChild[this.options.charkey] = text;
-        if (this.options.normalize) {
-          charChild[this.options.charkey] = charChild[this.options.charkey].replace(/\s{2,}/g, " ").trim();
+        charChild[this.charkey] = text;
+        if (this.normalize) {
+          charChild[this.charkey] = charChild[this.charkey].replace(/\s{2,}/g, " ").trim();
         }
-        s[this.options.childkey].push(charChild);
+        s[this.childkey].push(charChild);
       }
     }
     return s;
