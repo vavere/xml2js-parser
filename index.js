@@ -95,7 +95,6 @@ class Parser extends events.EventEmitter {
   }
 
   reset() {
-    this.EXPLICIT_CHARKEY = this.explicitCharkey;
     this.resultObject = null;
     this.stack = [];
     this.removeAllListeners();
@@ -152,7 +151,8 @@ class Parser extends events.EventEmitter {
       if (!(obj[key] instanceof Array)) obj[key] = [obj[key]];
       obj[key].push(newValue);
     }
-  }  
+  }
+  
   _openTag(node) {
     const obj = {[this.charkey]: ''};
     if (!this.ignoreAttrs) {
@@ -205,7 +205,7 @@ class Parser extends events.EventEmitter {
         obj[this.charkey] = obj[this.charkey].replace(/\s{2,}/g, ' ').trim();
       }
       obj[this.charkey] = this.valueProcessors ? processName(this.valueProcessors, obj[this.charkey]) : obj[this.charkey];
-      if (Object.keys(obj).length === 1 && this.charkey in obj && !this.EXPLICIT_CHARKEY) {
+      if (Object.keys(obj).length === 1 && this.charkey in obj && !this.explicitCharkey) {
         obj = obj[this.charkey];
       }
     }
@@ -242,7 +242,7 @@ class Parser extends events.EventEmitter {
         const objClone = Object.assign({}, obj);
         s[this.childkey].push(objClone);
         delete obj['#name'];
-        if (Object.keys(obj).length === 1 && this.charkey in obj && !this.EXPLICIT_CHARKEY) {
+        if (Object.keys(obj).length === 1 && this.charkey in obj && !this.explicitCharkey) {
           obj = obj[this.charkey];
         }
       }
