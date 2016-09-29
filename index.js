@@ -152,7 +152,7 @@ class Parser extends events.EventEmitter {
       obj[key].push(newValue);
     }
   }
-  
+
   _openTag(node) {
     const obj = {[this.charkey]: ''};
     if (!this.ignoreAttrs) {
@@ -160,8 +160,8 @@ class Parser extends events.EventEmitter {
       for (let key in ref) {
         if (!ref.hasOwnProperty(key)) continue;
         if (!(this.attrkey in obj) && !this.mergeAttrs) obj[this.attrkey] = {};
-        const newValue = this.attrValueProcessors ? processName(this.attrValueProcessors, node.attributes[key]) : node.attributes[key];
-        const processedKey = this.attrNameProcessors ? processName(this.attrNameProcessors, key) : key;
+        const newValue = processName(this.attrValueProcessors, node.attributes[key]);
+        const processedKey = processName(this.attrNameProcessors, key);
         if (this.mergeAttrs) {
           this._assignOrPush(obj, processedKey, newValue);
         } else {
@@ -169,7 +169,7 @@ class Parser extends events.EventEmitter {
         }
       }
     }
-    obj['#name'] = this.tagNameProcessors ? processName(this.tagNameProcessors, node.name) : node.name;
+    obj['#name'] = processName(this.tagNameProcessors, node.name);
     if (this.xmlns) {
       obj[this.xmlnskey] = {
         uri: node.uri,
@@ -204,7 +204,7 @@ class Parser extends events.EventEmitter {
       if (this.normalize) {
         obj[this.charkey] = obj[this.charkey].replace(/\s{2,}/g, ' ').trim();
       }
-      obj[this.charkey] = this.valueProcessors ? processName(this.valueProcessors, obj[this.charkey]) : obj[this.charkey];
+      obj[this.charkey] = processName(this.valueProcessors, obj[this.charkey]);
       if (Object.keys(obj).length === 1 && this.charkey in obj && !this.explicitCharkey) {
         obj = obj[this.charkey];
       }
@@ -301,6 +301,7 @@ class Parser extends events.EventEmitter {
 }
 
 function processName(processors, processedName) {
+  if (!processors) return processedName;
   for (let i = 0, len = processors.length; i < len; i++) {
     processedName = processors[i](processedName);
   }
