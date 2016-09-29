@@ -245,11 +245,7 @@ class Parser extends events.EventEmitter {
     if (this.stack.length > 0) {
       this._assignOrPush(s, nodeName, obj);
     } else {
-      if (this.explicitRoot) {
-        const old = obj;
-        obj = {};
-        obj[nodeName] = old;
-      }
+      if (this.explicitRoot) obj = {[nodeName]: obj};
       this.resultObject = obj;
       this.saxParser.ended = true;
       this.emit('end', this.resultObject);
