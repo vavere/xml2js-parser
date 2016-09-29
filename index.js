@@ -180,16 +180,17 @@ class Parser extends events.EventEmitter {
   }
 
   _closeTag() {
-    let cdata, emptyStr;
     let obj = this.stack.pop();
     const nodeName = obj['#name'];
     if (!this.explicitChildren || !this.preserveChildrenOrder) {
       delete obj['#name'];
     }
+    let cdata = false;
     if (obj.cdata === true) {
       cdata = obj.cdata;
       delete obj.cdata;
     }
+    let emptyStr = '';
     const s = this.stack[this.stack.length - 1];
     if (obj[this.charkey].match(/^\s*$/) && !cdata) {
       emptyStr = obj[this.charkey];
