@@ -160,8 +160,8 @@ class Parser extends events.EventEmitter {
         if (!(this.attrkey in obj) && !this.mergeAttrs) {
           obj[this.attrkey] = {};
         }
-        const processedValue = processName(this.attrValueProcessors, node.attributes[key]);
-        const processedKey = processName(this.attrNameProcessors, key);
+        const processedValue = preprocess(this.attrValueProcessors, node.attributes[key]);
+        const processedKey = preprocess(this.attrNameProcessors, key);
         if (this.mergeAttrs) {
           this._assignOrPush(obj, processedKey, processedValue);
         } else {
@@ -169,7 +169,7 @@ class Parser extends events.EventEmitter {
         }
       }
     }
-    obj['#name'] = processName(this.tagNameProcessors, node.name);
+    obj['#name'] = preprocess(this.tagNameProcessors, node.name);
     if (this.xmlns) {
       obj[this.xmlnskey] = {
         uri: node.uri,
@@ -204,7 +204,7 @@ class Parser extends events.EventEmitter {
       if (this.normalize) {
         obj[this.charkey] = obj[this.charkey].replace(/\s{2,}/g, ' ').trim();
       }
-      obj[this.charkey] = processName(this.valueProcessors, obj[this.charkey]);
+      obj[this.charkey] = preprocess(this.valueProcessors, obj[this.charkey]);
       if (Object.keys(obj).length === 1 && this.charkey in obj && !this.explicitCharkey) {
         obj = obj[this.charkey];
       }
@@ -299,12 +299,12 @@ class Parser extends events.EventEmitter {
 
 }
 
-function processName(processors, processedName) {
-  if (!processors) return processedName;
+function preprocess(processors, value) {
+  if (!processors) return value;
   for (let i = 0, len = processors.length; i < len; i++) {
-    processedName = processors[i](processedName);
+    value = processors[i](value);
   }
-  return processedName;
+  return value;
 }
 
 function stripBOM(str) {
