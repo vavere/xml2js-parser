@@ -29,7 +29,7 @@ You want to parse XML as simple and easy as possible? Take this:
 
 ```javascript
 const parseString = require('xml2js-parser').parseString;
-const xml = '<root>Hello xml2js-parser!</root>'
+const xml = '<root>Hello xml2js-parser!</root>';
 parseString(xml, (err, result) => {
   console.dir(result);
 });
