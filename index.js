@@ -223,7 +223,7 @@ module.exports = class Parser extends events.EventEmitter {
           node[this.charkey] = obj[this.charkey];
           delete obj[this.charkey];
         }
-        if (Object.getOwnPropertyNames(obj).length) {
+        if (Object.keys(obj).length) {
           node[this.childkey] = obj;
         }
         obj = node;
