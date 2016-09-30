@@ -1,5 +1,5 @@
 {
-  "name": "xml-2js",
+  "name": "xml2js-parser",
   "description": "Simple XML to JavaScript object converter.",
   "version": "0.0.2",
   "author": "Lauris Vavere <lauris@ma-1.lv>",
@@ -52,7 +52,8 @@
   "license": "MIT",
   "keywords": [
     "xml",
-    "json"
+    "json",
+    "parser"
   ],
   "scripts": {
     "test": "zap",
