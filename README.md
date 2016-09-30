@@ -3,13 +3,13 @@ xml2js-parser
 
 This is a fork from a wonderful [xml2js](https://www.npmjs.com/package/xml2js) module. 
 
-It aims to keep backwards compatibility with `xml2js` version _0.4.17_ and 
-target `nodejs` _v6.x_ and up. `xml2js-parser` does not support XML builder.
+It aims to keep backwards compatibility with `xml2js` version 0.4.17 and 
+target `nodejs` v6.x and up. `xml2js-parser` does not support XML building.
 
 Motivation behind fork was:
 - do not use `coffee-script`
-- do one thing and do it well (__no builder__)
-- minimal dependency tree (__no lodash__)
+- do one thing and do it well (_no builder_)
+- minimal dependency tree (_no lodash_)
 - use javascript new features from node v6.x
 
 Description
@@ -20,7 +20,7 @@ Simple XML to JavaScript object converter and uses [sax-js](https://github.com/i
 Installation
 -----------
 
-Yo install just type `npm install `xml2js-parser` which will download xml2js-parser and all dependencies.
+Yo install just type `npm install xml2js-parser` which will download xml2js-parser and dependencies.
 
 Shoot-and-forget usage
 ----------------------
@@ -52,8 +52,8 @@ const fs = require('fs');
 const Parser = require('xml2js-parser');
 
 var parser = new Parser({trim: true});
-fs.readFile(__dirname + '/foo.xml', (err, data) => {
-  parser.parseString(data, (err, result) => {
+fs.readFile(__dirname + '/foo.xml', (err, xml) => {
+  parser.parseString(xml, (err, result) => {
     console.dir(result);
   });
 });
@@ -106,7 +106,7 @@ E.g. "0" becomes 0 and "15.56" becomes 15.56
 E.g. "true" becomes true and "False" becomes false
 
 Options
-=======
+-------
 
 Apart from the default settings, there are a number of options that can be
 specified for the parser. Options are specified by ``new Parser({optionName:
@@ -157,57 +157,29 @@ value})``. Possible options are:
     Defaults to `true` which is *highly* recommended, since parsing HTML which
     is not well-formed XML might yield just about anything. 
   * `attrNameProcessors` (default: `null`): Allows the addition of attribute
-    name processing functions. Accepts an `Array` of functions with following
-    signature:
-    ```javascript
-    function (name){
-        //do something with `name`
-        return name
-    }
-    ```
+    name processing functions. Accepts an `Array` of functions.
   * `attrValueProcessors` (default: `null`): Allows the addition of attribute
-    value processing functions. Accepts an `Array` of functions with following
-    signature:
-    ```javascript
-    function (name){
-      //do something with `name`
-      return name
-    }
-    ```
+    value processing functions. Accepts an `Array` of functions.
   * `tagNameProcessors` (default: `null`): Allows the addition of tag name
-    processing functions. Accepts an `Array` of functions with following
-    signature:
-    ```javascript
-    function (name){
-      //do something with `name`
-      return name
-    }
-    ```
+    processing functions. Accepts an `Array` of functions.
   * `valueProcessors` (default: `null`): Allows the addition of element value
-    processing functions. Accepts an `Array` of functions with following
-    signature:
-    ```javascript
-    function (name){
-      //do something with `name`
-      return name
-    }
-    ```
+    processing functions. Accepts an `Array` of functions.
+
+Getting support
+---------------
+
+If you know you really found a bug, feel free to open an issue.
 
 Running tests, development
-==========================
+--------------------------
 
-The development requirements are handled by npm, you just need to install them.
+The development requirements are handled by `npm install` if you clone repository.
 We also have a number of unit tests, they can be run using `npm test` directly
 from the project root. This runs zap to discover all the tests and execute
 them.
 
-Getting support
-===============
-
-If you know you really found a bug, feel free to open an issue.
-
-# How to contribute
--------------------
+How to contribute
+-----------------
 
 I'm always happy about useful new pull requests. Keep in mind that the better
 your pull request is, the easier it can be added to `xml2js-parser`. As such please
