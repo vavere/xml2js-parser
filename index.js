@@ -48,7 +48,6 @@ module.exports = class Parser extends events.EventEmitter {
   static get defaults() { return DEFAULTS; }
   static get processors() { return PROCESSORS; }
   static get ValidationError() { return ValidationError; }
-  static get Parser() { return Parser; }
 
   static parseString(str, a, b) {
     let cb, options = {};
@@ -309,3 +308,4 @@ function stripBOM(str) {
   return str[0] === '\uFEFF' ? str.substring(1) : str;
 }
 
+module.exports.Parser = function(opts) { return new module.exports(opts); }
