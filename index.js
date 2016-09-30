@@ -160,12 +160,12 @@ class Parser extends events.EventEmitter {
         if (!(this.attrkey in obj) && !this.mergeAttrs) {
           obj[this.attrkey] = {};
         }
-        const newValue = processName(this.attrValueProcessors, node.attributes[key]);
+        const processedValue = processName(this.attrValueProcessors, node.attributes[key]);
         const processedKey = processName(this.attrNameProcessors, key);
         if (this.mergeAttrs) {
-          this._assignOrPush(obj, processedKey, newValue);
+          this._assignOrPush(obj, processedKey, processedValue);
         } else {
-          obj[this.attrkey][processedKey] = newValue;
+          obj[this.attrkey][processedKey] = processedValue;
         }
       }
     }
