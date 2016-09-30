@@ -156,10 +156,10 @@ class Parser extends events.EventEmitter {
   _openTag(node) {
     const obj = {[this.charkey]: ''};
     if (!this.ignoreAttrs) {
-      const ref = node.attributes;
-      for (let key in ref) {
-        if (!ref.hasOwnProperty(key)) continue;
-        if (!(this.attrkey in obj) && !this.mergeAttrs) obj[this.attrkey] = {};
+      for (let key of Object.keys(node.attributes)) {
+        if (!(this.attrkey in obj) && !this.mergeAttrs) {
+          obj[this.attrkey] = {};
+        }
         const newValue = processName(this.attrValueProcessors, node.attributes[key]);
         const processedKey = processName(this.attrNameProcessors, key);
         if (this.mergeAttrs) {
