@@ -153,7 +153,7 @@ module.exports = class Parser extends events.EventEmitter {
         const processedValue = preprocess(this.attrValueProcessors, node.attributes[key]);
         const processedKey = preprocess(this.attrNameProcessors, key);
         if (this.mergeAttrs) {
-          this._assignOrPush(obj, processedKey, processedValue);
+          assignOrPush(obj, processedKey, processedValue, this.explicitArray);
         } else {
           obj[this.attrkey][processedKey] = processedValue;
         }
@@ -238,7 +238,7 @@ module.exports = class Parser extends events.EventEmitter {
     }
 
     if (this.stack.length > 0) {
-      this._assignOrPush(s, nodeName, obj);
+      assignOrPush(s, nodeName, obj, this.explicitArray);
     } else {
       if (this.explicitRoot) {
         obj = {[nodeName]: obj};
@@ -286,16 +286,16 @@ module.exports = class Parser extends events.EventEmitter {
     }
   }
   
-  _assignOrPush(obj, key, newValue) {
-    if (!(key in obj)) {
-      obj[key] = this.explicitArray ? [newValue] : newValue;
-    } else {
-      if (!(obj[key] instanceof Array)) obj[key] = [obj[key]];
-      obj[key].push(newValue);
-    }
-  }  
-
 }
+
+function assignOrPush(obj, key, value, explicit) {
+  if (!(key in obj)) {
+    obj[key] = explicit ? [value] : value;
+  } else {
+    if (!(obj[key] instanceof Array)) obj[key] = [obj[key]];
+    obj[key].push(value);
+  }
+} 
 
 function preprocess(processors, value) {
   if (!processors) return value;
