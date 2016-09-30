@@ -239,8 +239,7 @@ class Parser extends events.EventEmitter {
         obj = node;
       } else if (s) {
         s[this.childkey] = s[this.childkey] || [];
-        const objClone = Object.assign({}, obj);
-        s[this.childkey].push(objClone);
+        s[this.childkey].push(Object.assign({}, obj));
         delete obj['#name'];
         if (Object.keys(obj).length === 1 && this.charkey in obj && !this.explicitCharkey) {
           obj = obj[this.charkey];
