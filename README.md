@@ -1,75 +1,63 @@
-xml-2js
-=======
+xml2js-parser
+=============
 
-`xml-2js` is a fork of [xml2js](https://www.npmjs.com/package/xml2js). 
+This is a fork from a wonderful [xml2js](https://www.npmjs.com/package/xml2js) module. 
 
-It aims to keep backwards compatibility with `xml2js`, 
-while no longer use `coffee-script` and target `nodejs` _v6.x_ and up.
+It aims to keep backwards compatibility with `xml2js` version _0.4.17_ and 
+target `nodejs` _v6.x_ and up. `xml2js-parser` does not support XML builder.
+
+Motivation behind fork was:
+- do not use `coffee-script`
+- do one thing and do it well (__no builder__)
+- minimal dependency tree (__no lodash__)
+- use javascript new features from node v6.x
 
 Description
 -----------
 
-Simple XML to JavaScript object converter and uses [sax-js](https://github.com/isaacs/sax-js/).
-
-Note: If you're looking for a full DOM parser, you probably want
-[JSDom](https://github.com/tmpvar/jsdom) or other.
+Simple XML to JavaScript object converter and uses [sax-js](https://github.com/isaacs/sax-js/) for parsing.
 
 Installation
 -----------
 
-Simplest way to install `xml-2js` is to use [npm](http://npmjs.org), just `npm
-install xml-2js` which will download xml-2js and all dependencies.
-
-Usage
------
-
-No extensive tutorials required because you are a smart developer! The task of
-parsing XML should be an easy one, so let's make it so! Here's some examples.
+Yo install just type `npm install `xml2js-parser` which will download xml2js-parser and all dependencies.
 
 Shoot-and-forget usage
 ----------------------
 
-You want to parse XML as simple and easy as possible? It's dangerous to go
-alone, take this:
+You want to parse XML as simple and easy as possible? Take this:
 
 ```javascript
-var parseString = require('xml-2js').parseString;
-const xml = "<root>Hello xml2js!</root>"
+const parseString = require('xml2js-parser').parseString;
+const xml = '<root>Hello xml2js-parser!</root>'
 parseString(xml, (err, result) => {
-    console.dir(result);
+  console.dir(result);
 });
 ```
 
-If you need some special options, fear not, `xml-2js` supports a number of
+If you need some special options, `xml2js-parser` supports a number of
 options (see below), you can specify these as second argument:
 
 ```javascript
-parseString(xml, {trim: true}, function (err, result) {
+parseString(xml, {trim: true}, function (err, result) => {
+  // processed data
 });
 ```
 
-Simple as pie usage
--------------------
-
-That's right, if you have been using xml-simple or a home-grown wrapper:
+Standard usage
+--------------
 
 ```javascript
-var fs = require('fs'),
-    xml2js = require('xml-2js');
+const fs = require('fs');
+const Parser = require('xml2js-parser');
 
-var parser = new xml2js.Parser();
+var parser = new Parser({trim: true});
 fs.readFile(__dirname + '/foo.xml', (err, data) => {
-    parser.parseString(data, (err, result) => {
-        console.dir(result);
-        console.log('Done');
-    });
+  parser.parseString(data, (err, result) => {
+    console.dir(result);
+  });
 });
 ```
-
-Parsing multiple files
-----------------------
-
-If you want to parse multiple files, you can call `reset()` after each object.
 
 Processing attribute, tag names and values
 ------------------------------------------
@@ -78,7 +66,7 @@ You can optionally provide the parser with attribute name and tag name processor
 as element value processors:
 
 ```javascript
-function nameToUpperCase(name){
+function nameToUpperCase(name) {
   return name.toUpperCase();
 }
 
@@ -97,16 +85,13 @@ The `tagNameProcessors`, `attrNameProcessors`, `attrValueProcessors` and `valueP
 accept an `Array` of functions with the following signature:
 
 ```javascript
-function (name){
-  //do something with `name`
-  return name
-}
+function (name) { //do something with name and return result }
 ```
 
 Some processors are provided out-of-the-box and can be found in code:
 
 - `normalize`: transforms the name to lowercase.
-(Automatically used when `options.normalize` is set to `true`)
+(Automatically used when `normalize` option is set to `true`)
 
 - `firstCharLowerCase`: transforms the first character to lower case.
 E.g. 'MyTagName' becomes 'myTagName'
@@ -219,11 +204,20 @@ them.
 Getting support
 ===============
 
-Please, if you have a problem with the library, first make sure you read this
-README. If you read this far, thanks, you're good. Then, please make sure your
-problem really is with `xml-2js`. It is? Okay, then I'll look at it. Send me a
-mail and we can talk. Please don't open issues, as I don't think that is the
-proper forum for support problems. Some problems might as well really be bugs
-in `xml-2js`, if so I'll let you know to open an issue instead :)
+If you know you really found a bug, feel free to open an issue.
 
-But if you know you really found a bug, feel free to open an issue instead.
+# How to contribute
+-------------------
+
+I'm always happy about useful new pull requests. Keep in mind that the better
+your pull request is, the easier it can be added to `xml2js-parser`. As such please
+make sure your patch is ok:
+
+ * `xml2js-parser` is written in ECMAScript 2015 for node v6.x, respect it.
+ * Make sure that the unit tests still all pass. 
+ * Please, add a unit test with your pull request, to show what was broken and
+   is now fixed or what was impossible and now works due to your new code.
+ * If you add a new feature, please add some documentation that it exists.
+
+If you like, you can add yourself in the `package.json` as contributor if you
+deem your contribution significant enough. 
