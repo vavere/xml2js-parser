@@ -143,15 +143,6 @@ class Parser extends events.EventEmitter {
       }
     }
   }
-  
-  _assignOrPush(obj, key, newValue) {
-    if (!(key in obj)) {
-      obj[key] = this.explicitArray ? [newValue] : newValue;
-    } else {
-      if (!(obj[key] instanceof Array)) obj[key] = [obj[key]];
-      obj[key].push(newValue);
-    }
-  }
 
   _openTag(node) {
     const obj = {[this.charkey]: ''};
@@ -296,6 +287,15 @@ class Parser extends events.EventEmitter {
       this.emit('error', err);
     }
   }
+  
+  _assignOrPush(obj, key, newValue) {
+    if (!(key in obj)) {
+      obj[key] = this.explicitArray ? [newValue] : newValue;
+    } else {
+      if (!(obj[key] instanceof Array)) obj[key] = [obj[key]];
+      obj[key].push(newValue);
+    }
+  }  
 
 }
 
