@@ -1,14 +1,10 @@
 {
-  "name": "xml2js",
+  "name": "xml2js-parser",
   "description": "Simple XML to JavaScript object converter.",
-  "keywords": [
-    "xml",
-    "json"
-  ],
-  "homepage": "https://github.com/Leonidas-from-XIV/node-xml2js",
-  "version": "0.4.17",
-  "author": "Marek Kubica <marek@xivilization.net> (https://xivilization.net)",
+  "version": "1.0.1",
+  "author": "Lauris Vavere <lauris@ma-1.lv>",
   "contributors": [
+    "Marek Kubica <marek@xivilization.net> (https://xivilization.net)",
     "maqr <maqr.lollerskates@gmail.com> (https://github.com/maqr)",
     "Ben Weaver (http://benweaver.com/)",
     "Jae Kwon (https://github.com/jaekwon)",
@@ -53,13 +49,12 @@
     "David Wood <david.p.wood@gmail.com> (http://codesleuth.co.uk/)",
     "Nicolas Maquet (https://github.com/nmaquet)"
   ],
-  "main": "./lib/xml2js",
-  "files": [
-    "lib"
+  "license": "MIT",
+  "keywords": [
+    "xml",
+    "json",
+    "parser"
   ],
-  "directories": {
-    "lib": "./lib"
-  },
   "scripts": {
     "test": "zap",
     "coverage": "nyc npm test && nyc report",
@@ -67,19 +62,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Leonidas-from-XIV/node-xml2js.git"
+    "url": "https://github.com/vavere/xml2js-parser/"
   },
   "dependencies": {
-    "sax": ">=0.6.0",
-    "xmlbuilder": "^8.2.0"
+    "sax": "^1.2.1"
   },
   "devDependencies": {
     "coffee-script": ">=1.10.0",
     "coveralls": "^2.11.2",
     "diff": ">=1.0.8",
-    "docco": ">=0.6.2",
     "nyc": ">=2.2.1",
     "zap": ">=0.2.9"
   },
-  "license": "MIT"
+  "engines" : { 
+    "node" : ">=6.0.0" 
+  }   
 }

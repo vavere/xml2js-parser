@@ -1,4 +1,4 @@
-processors = require '../lib/processors'
+processors = require('../').processors
 assert = require 'assert'
 equ = assert.equal
 

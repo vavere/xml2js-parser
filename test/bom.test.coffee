@@ -1,4 +1,4 @@
-xml2js = require '../lib/xml2js'
+xml2js = require '../'
 assert = require 'assert'
 equ = assert.equal
 
