@@ -62,7 +62,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vavere/node-xml2js"
+    "url": "https://github.com/vavere/xml2js-parser/"
   },
   "dependencies": {
     "sax": "^1.2.1"
