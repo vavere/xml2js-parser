@@ -43,7 +43,7 @@ const PROCESSORS = {
 
 class ValidationError extends Error {};
 
-class Parser extends events.EventEmitter {
+module.exports = class Parser extends events.EventEmitter {
   
   static get defaults() { return DEFAULTS; }
   static get processors() { return PROCESSORS; }
@@ -311,4 +311,3 @@ function stripBOM(str) {
   return str[0] === '\uFEFF' ? str.substring(1) : str;
 }
 
-module.exports = Parser;
