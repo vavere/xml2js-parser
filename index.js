@@ -270,18 +270,16 @@ module.exports = class Parser extends events.EventEmitter {
   }
   
   _onEnd() {
-    if (!this.saxParser.ended) {
-      this.saxParser.ended = true;
-      this.emit('end', null);
-    }
+    if (this.saxParser.ended) return;
+    this.saxParser.ended = true;
+    this.emit('end', null);
   }
   
   _onError(err) {
     this.saxParser.resume();
-    if (!this.saxParser.errThrown) {
-      this.saxParser.errThrown = true;
-      this.emit('error', err);
-    }
+    if (this.saxParser.errThrown) return;
+    this.saxParser.errThrown = true;
+    this.emit('error', err);
   }
   
 }
