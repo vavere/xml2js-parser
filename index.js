@@ -295,10 +295,7 @@ function assignOrPush(obj, key, value, explicit) {
 
 function preprocess(processors, value) {
   if (!processors) return value;
-  for (let i = 0, len = processors.length; i < len; i++) {
-    value = processors[i](value);
-  }
-  return value;
+  return processors.reduce((v, func) => func(v), value);
 }
 
 function stripBOM(str) {
