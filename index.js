@@ -128,8 +128,7 @@ module.exports = class Parser extends events.EventEmitter {
       str = stripBOM(str);
       if (this.async) {
         this.remaining = str;
-        setImmediate(() => this.processAsync());
-        return this.saxParser;
+        return setImmediate(() => this.processAsync());
       }
       this.saxParser.write(str).close();
     } catch (err) {
