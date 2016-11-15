@@ -567,16 +567,32 @@ tape('test validation error', (t) => {
   });
 });
 
-tape('test error throwing', (t) => {
+//
+// this is sync behavior !!!
+//
+
+// tape('test error throwing', (t) => {
+//   const xml = '<?xml version="1.0" encoding="utf-8"?><test>content is ok<test>';
+//   try {
+//     xml2js.parseString(xml, function(err, parsed) {
+//       throw new Error('error throwing in callback');
+//     });
+//     throw new Error('error throwing outside');
+//   } catch (error) {
+//     e = error;
+//     t.is(e.message, 'error throwing in callback');
+//     t.end();
+//   }
+// });
+
+tape('test sync error throwing', (t) => {
   const xml = '<?xml version="1.0" encoding="utf-8"?><test>content is ok<test>';
   try {
-    xml2js.parseString(xml, function(err, parsed) {
-      throw new Error('error throwing in callback');
-    });
-    throw new Error('error throwing outside');
+    xml2js.parseStringSync(xml);
+    throw new Error('throw error after sync');
   } catch (error) {
     e = error;
-    t.is(e.message, 'error throwing in callback');
+    t.isNot(e.message, 'throw error after sync');
     t.end();
   }
 });
@@ -609,22 +625,6 @@ tape('test xmlns', (t) => {
     t.is(r.sample["pfx:top"][0].middle[0].$ns.uri, 'http://bar.com');
     t.end();
   });
-});
-
-tape('test callback should be called once', (t) => {
-  const xml = '<?xml version="1.0" encoding="utf-8"?><test>test</test>';
-  let i = 0;
-  try {
-    xml2js.parseString(xml, function(err, parsed) {
-      i = i + 1;
-      throw new Error('Custom error message');
-    });
-  } catch (error) {
-    e = error;
-    t.is(i, 1);
-    t.is(e.message, 'Custom error message');
-    t.end();
-  }
 });
 
 tape('test no error event after end', (t) => {

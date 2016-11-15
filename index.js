@@ -49,6 +49,11 @@ module.exports = class Parser extends events.EventEmitter {
   static get processors() { return PROCESSORS; }
   static get ValidationError() { return ValidationError; }
 
+  static parseStringSync(str, options = {}) {
+    const parser = new Parser(options);
+    return parser.parseStringSync(str);
+  }  
+
   static parseString(str, a, b) {
     let cb, options = {};
     if (b != null) {
@@ -72,18 +77,15 @@ module.exports = class Parser extends events.EventEmitter {
     this.reset();
   }
   
-  processAsync() {
+  processAsync(remaining) {
     try {
-      if (this.remaining.length <= this.chunkSize) {
-        const chunk = this.remaining;
-        this.remaining = '';
-        this.saxParser = this.saxParser.write(chunk);
-        this.saxParser.close();
+      if (remaining.length <= this.chunkSize) {
+        this.saxParser.write(remaining).close();
       } else {
-        const chunk = this.remaining.substr(0, this.chunkSize);
-        this.remaining = this.remaining.substr(this.chunkSize, this.remaining.length);
-        this.saxParser = this.saxParser.write(chunk);
-        setImmediate(() => this.processAsync());
+        const chunk = remaining.substr(0, this.chunkSize);
+        remaining = remaining.substr(this.chunkSize, remaining.length);
+        this.saxParser.write(chunk);
+        setImmediate(() => this.processAsync(remaining));
       }
     } catch (err) {
       if (!this.saxParser.errThrown) {
@@ -112,6 +114,21 @@ module.exports = class Parser extends events.EventEmitter {
     this.saxParser.onerror = (err) => this._onError(err);
   }
 
+  parseStringSync(str) {
+    let result, error;
+    this.on('end', (res) => result = res);
+    this.on('error', (err) => error = err);
+    try {
+      str = stripBOM(str.toString()).trim();
+      if (!str) return null;
+      this.saxParser.write(str).close(); 
+    } finally {
+      this.reset();
+    }
+    if (error) throw error;
+    return result;
+  }
+
   parseString(str, cb) {
     if (typeof cb === 'function') {
       this.on('end', (result) => {
@@ -124,21 +141,11 @@ module.exports = class Parser extends events.EventEmitter {
       });
     }
     try {
-      str = str.toString();
-      if (str.trim() === '') return this.emit('end', null);
-      str = stripBOM(str);
-      if (this.async) {
-        this.remaining = str;
-        return setImmediate(() => this.processAsync());
-      }
-      this.saxParser.write(str).close();
+      str = stripBOM(str.toString()).trim();
+      if (!str) return this.emit('end', null);
+      setImmediate(() => this.processAsync(str));
     } catch (err) {
-      if (!(this.saxParser.errThrown || this.saxParser.ended)) {
-        this.emit('error', err);
-        this.saxParser.errThrown = true;
-      } else if (this.saxParser.ended) {
-        throw err;
-      }
+      this.emit('error', err);
     }
   }
 
