@@ -96,6 +96,7 @@ module.exports = class Parser extends events.EventEmitter {
   reset() {
     this.removeAllListeners();
     this.stack = [];
+    this.result = null;
     this.saxParser = sax.parser(this.strict, {
       trim: false,
       normalize: false,
@@ -241,8 +242,7 @@ module.exports = class Parser extends events.EventEmitter {
       if (this.explicitRoot) {
         obj = {[nodeName]: obj};
       }
-      this.saxParser.ended = true;
-      this.emit('end', obj);
+      this.result = obj;
     }
   }
   
@@ -272,7 +272,7 @@ module.exports = class Parser extends events.EventEmitter {
   _onEnd() {
     if (this.saxParser.ended) return;
     this.saxParser.ended = true;
-    this.emit('end', null);
+    this.emit('end', this.result);
   }
   
   _onError(err) {
