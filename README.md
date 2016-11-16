@@ -1,21 +1,22 @@
 xml2js-parser
 =============
 
+Simple XML to JavaScript object converter that uses a [sax-js](https://github.com/isaacs/sax-js/) for parsing.
+Support async as native promise or callback and sync mode operation.
+
+Description
+-----------
+
 This is a fork from a wonderful [xml2js](https://www.npmjs.com/package/xml2js) module. 
 
 It aims to keep backwards compatibility with `xml2js` version 0.4.17 and 
-target `nodejs` v6.x and up. `xml2js-parser` does not support XML building.
+target `nodejs` v6.x but without XML building support.
 
 Motivation behind fork was:
 - do not use `coffee-script`
 - do one thing and do it well (_no builder_)
 - minimal dependency tree (_no lodash_)
 - use javascript new features from node v6.x
-
-Description
------------
-
-Simple XML to JavaScript object converter and uses [sax-js](https://github.com/isaacs/sax-js/) for parsing.
 
 Installation
 -----------
@@ -44,6 +45,19 @@ parseString(xml, {trim: true}, function (err, result) => {
 });
 ```
 
+New promises usage
+------------------
+
+```javascript
+const parseString = require('xml2js-parser').parseString;
+
+const xml = '<root>Hello xml2js-parser!</root>';
+parseString(xml)
+.then(res) => console.log(res))
+.catch(err) => console.error(err));
+});
+```
+
 Standard usage
 --------------
 
@@ -56,6 +70,24 @@ fs.readFile(__dirname + '/foo.xml', (err, xml) => {
   parser.parseString(xml, (err, result) => {
     console.dir(result);
   });
+});
+```
+
+Sync mode
+---------
+
+```javascript
+const fs = require('fs');
+const parseStringSync = require('xml2js-parser').parseStringSync;
+
+var parser = new Parser({trim: true});
+fs.readFile(__dirname + '/foo.xml', (err, xml) => {
+  try {
+    const res = parser.parseStringSync(xml);
+    console.log(res);
+  } catch (err)  {
+    console.error(err);
+  }
 });
 ```
 
