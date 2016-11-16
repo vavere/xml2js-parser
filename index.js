@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const sax = require('sax');
 const events = require('events');
 
@@ -7,8 +7,8 @@ const DEFAULTS = {
   trim: false,
   normalize: false,
   normalizeTags: false,
-  attrkey: "$",
-  charkey: "_",
+  attrkey: '$',
+  charkey: '_',
   explicitArray: true,
   ignoreAttrs: false,
   mergeAttrs: false,
@@ -41,7 +41,7 @@ const PROCESSORS = {
   parseBooleans(str) { return BOOL_MATCH.test(str) ? str.toLowerCase() === 'true' : str; }
 };
 
-class ValidationError extends Error {};
+class ValidationError extends Error {}
 
 module.exports = class Parser extends events.EventEmitter {
   
@@ -263,7 +263,7 @@ module.exports = class Parser extends events.EventEmitter {
         const charChild = {'#name': '__text__'};
         charChild[this.charkey] = text;
         if (this.normalize) {
-          charChild[this.charkey] = charChild[this.charkey].replace(/\s{2,}/g, " ").trim();
+          charChild[this.charkey] = charChild[this.charkey].replace(/\s{2,}/g, ' ').trim();
         }
         s[this.childkey].push(charChild);
       }
@@ -289,7 +289,7 @@ module.exports = class Parser extends events.EventEmitter {
     this.emit('error', err);
   }
   
-}
+};
 
 function assignOrPush(obj, key, value, explicit) {
   if (!(key in obj)) {
@@ -309,4 +309,4 @@ function stripBOM(str) {
   return str[0] === '\uFEFF' ? str.substring(1) : str;
 }
 
-module.exports.Parser = function(opts) { return new module.exports(opts); }
+module.exports.Parser = function(opts) { return new module.exports(opts); };
