@@ -495,6 +495,19 @@ tape('test double parse', (t) => {
   });
 });
 
+tape('test promise mode', (t) => {
+  const x2js = new xml2js.Parser();
+  fs.readFile(fileName, (err, data) => {
+    t.is(err, null);
+    x2js.parseString(data)
+    .then((r) => {
+      t.is(r.sample.chartest[0]._, 'Character data here!');
+      t.end();
+    })
+    .catch((err) => t.fail(err));
+  });
+});
+
 tape('test element with garbage XML', (t) => {
   const x2js = new xml2js.Parser();
   const xmlString = "<<>fdfsdfsdf<><<><??><<><>!<>!<!<>!.";

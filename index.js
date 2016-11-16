@@ -130,23 +130,25 @@ module.exports = class Parser extends events.EventEmitter {
   }
 
   parseString(str, cb) {
-    if (typeof cb === 'function') {
+    const promise = new Promise((reolve, reject) => {
       this.on('end', (result) => {
         this.reset();
-        cb(null, result);
+        reolve(result);
       });
       this.on('error', (err) => {
         this.reset();
-        cb(err);
+        reject(err);
       });
-    }
-    try {
-      str = stripBOM(str.toString()).trim();
-      if (!str) return this.emit('end', null);
-      setImmediate(() => this.processAsync(str));
-    } catch (err) {
-      this.emit('error', err);
-    }
+      try {
+        str = stripBOM(str.toString()).trim();
+        if (!str) return this.emit('end', null);
+        setImmediate(() => this.processAsync(str));
+      } catch (err) {
+        this.emit('error', err);
+      }
+    });
+    if (typeof cb != 'function') return promise;
+    promise.then((res) => cb(null, res), (err) => cb(err));
   }
 
   _openTag(node) {
