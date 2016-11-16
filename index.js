@@ -20,7 +20,6 @@ const DEFAULTS = {
   childkey: '$$',
   charsAsChildren: false,
   includeWhiteChars: false,
-  async: false,
   strict: true,
   attrNameProcessors: null,
   attrValueProcessors: null,

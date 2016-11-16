@@ -151,8 +151,6 @@ value})``. Possible options are:
     considered children if `explicitChildren` is on.
   * `includeWhiteChars` (default `false`): Determines whether whitespace-only
      text nodes should be included. 
-  * `async` (default `false`): Should the callbacks be async? This *might* be
-    an incompatible change if your code depends on sync execution of callbacks.
   * `strict` (default `true`): Set sax-js to strict or non-strict parsing mode.
     Defaults to `true` which is *highly* recommended, since parsing HTML which
     is not well-formed XML might yield just about anything. 
