@@ -43,7 +43,7 @@ const PROCESSORS = {
 class ValidationError extends Error {}
 
 module.exports = class Parser extends events.EventEmitter {
-  
+
   static get defaults() { return DEFAULTS; }
   static get processors() { return PROCESSORS; }
   static get ValidationError() { return ValidationError; }
@@ -51,7 +51,7 @@ module.exports = class Parser extends events.EventEmitter {
   static parseStringSync(str, options = {}) {
     const parser = new Parser(options);
     return parser.parseStringSync(str);
-  }  
+  }
 
   static parseString(str, a, b) {
     let cb, options = {};
@@ -63,7 +63,7 @@ module.exports = class Parser extends events.EventEmitter {
     }
     const parser = new Parser(options);
     parser.parseString(str, cb);
-  }  
+  }
 
   constructor(options) {
     super();
@@ -75,7 +75,7 @@ module.exports = class Parser extends events.EventEmitter {
     }
     this.reset();
   }
-  
+
   processAsync(remaining) {
     try {
       if (remaining.length <= this.chunkSize) {
@@ -120,7 +120,7 @@ module.exports = class Parser extends events.EventEmitter {
     try {
       str = stripBOM(str.toString()).trim();
       if (!str) return null;
-      this.saxParser.write(str).close(); 
+      this.saxParser.write(str).close();
     } finally {
       this.reset();
     }
@@ -188,7 +188,7 @@ module.exports = class Parser extends events.EventEmitter {
     if (cdata) {
       delete obj.cdata;
     }
-    
+
     let emptyStr = '';
     const s = this.stack[this.stack.length - 1];
     if (obj[this.charkey].match(/^\s*$/) && !cdata) {
@@ -206,7 +206,7 @@ module.exports = class Parser extends events.EventEmitter {
         obj = obj[this.charkey];
       }
     }
-    if (!Object.keys(obj).length) {
+    if (obj instanceof Object && !Object.keys(obj).length) {
       obj = this.emptyTag !== '' ? this.emptyTag : emptyStr;
     }
 
@@ -253,12 +253,12 @@ module.exports = class Parser extends events.EventEmitter {
       this.result = obj;
     }
   }
-  
+
   _onText(text) {
     const s = this.stack[this.stack.length - 1];
     if (s) {
       s[this.charkey] += text;
-      if (this.explicitChildren && this.preserveChildrenOrder && 
+      if (this.explicitChildren && this.preserveChildrenOrder &&
           this.charsAsChildren && (this.includeWhiteChars || text.replace(/\\n/g, '').trim() !== '')) {
         s[this.childkey] = s[this.childkey] || [];
         const charChild = {'#name': '__text__'};
@@ -276,20 +276,20 @@ module.exports = class Parser extends events.EventEmitter {
     const s = this._onText(text);
     if (s) s.cdata = true;
   }
-  
+
   _onEnd() {
     if (this.saxParser.ended) return;
     this.saxParser.ended = true;
     this.emit('end', this.result);
   }
-  
+
   _onError(err) {
     this.saxParser.resume();
     if (this.saxParser.errThrown) return;
     this.saxParser.errThrown = true;
     this.emit('error', err);
   }
-  
+
 };
 
 function assignOrPush(obj, key, value, explicit) {
@@ -299,7 +299,7 @@ function assignOrPush(obj, key, value, explicit) {
     if (!(obj[key] instanceof Array)) obj[key] = [obj[key]];
     obj[key].push(value);
   }
-} 
+}
 
 function preprocess(processors, value) {
   if (!processors) return value;
